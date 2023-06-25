@@ -1,4 +1,18 @@
+using AplicationWebMVC.Context;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+//Configuracion cadena de conexion
+builder.Services.AddDbContext<ApplicationDbContext>(option => 
+    option.UseSqlServer(
+        builder.Configuration.GetConnectionString("ConexionSsql")
+    ));
+
+//Agregar el servicio Indetity a la aplicacion
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -18,6 +32,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+//Se agrega la autenticacion
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
